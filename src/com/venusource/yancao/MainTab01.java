@@ -122,6 +122,7 @@ public class MainTab01 extends Fragment
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 		
+		
 		LinearLayout ly = new LinearLayout(view.getContext());
 
 		RelativeLayout rl = new RelativeLayout(view.getContext());
