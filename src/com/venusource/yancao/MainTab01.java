@@ -46,6 +46,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -121,6 +122,7 @@ public class MainTab01 extends Fragment
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 		
+		LinearLayout ly = new LinearLayout(view.getContext());
 
 		RelativeLayout rl = new RelativeLayout(view.getContext());
 
@@ -155,7 +157,8 @@ public class MainTab01 extends Fragment
 		location2.setGravity(Gravity.CENTER);
 		rl.addView(location2, param2);
 		rl.setBackgroundResource(R.drawable.pop);
-		BitmapDescriptor bd = BitmapDescriptorFactory.fromView(rl);
+		ly.addView(rl);
+		BitmapDescriptor bd = BitmapDescriptorFactory.fromView(ly);
 		
 		LatLng llA = new LatLng(30.583970, 114.259781);	
 		MarkerOptions ooA = new MarkerOptions().position(llA).icon(bd)
