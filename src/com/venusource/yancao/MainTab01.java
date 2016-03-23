@@ -395,6 +395,7 @@ public class MainTab01 extends Fragment
         translatAnimation.setFillAfter(true);
         sw.startAnimation(translatAnimation);
         
+        
         runnable.run(); 
         
 //        mGestureDetector = new GestureDetector(view.getContext(), new DefaultGestureListener());
