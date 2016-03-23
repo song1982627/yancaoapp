@@ -158,6 +158,7 @@ public class MainTab01 extends Fragment
 		rl.addView(location2, param2);
 		rl.setBackgroundResource(R.drawable.pop);
 		ly.addView(rl);
+		
 		BitmapDescriptor bd = BitmapDescriptorFactory.fromView(ly);
 		
 		LatLng llA = new LatLng(30.583970, 114.259781);	
