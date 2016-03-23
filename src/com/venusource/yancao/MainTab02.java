@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 public class MainTab02 extends Fragment
 {
 	//by simple   
+	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		return inflater.inflate(R.layout.main_tab_02, container, false);
