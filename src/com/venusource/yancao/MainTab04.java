@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 @SuppressLint("NewApi")
 public class MainTab04 extends Fragment
 {
-
+	
+	//
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
