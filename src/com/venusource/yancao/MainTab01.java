@@ -68,16 +68,29 @@ public class MainTab01 extends Fragment
 	BaiduMap mBaiduMap;
 	boolean isFirstLoc = true; // 是否首次定位
 	boolean show = true;
+	TextView textView1;
+	
 	
 	private static final int paddingLeft = 100;
 	private static final int paddingTop = 220;
 	private static final int paddingRight = 100;
 	private static final int paddingBottom = 380;
+	private int recLen = 0;
 
 	private GestureDetector mGestureDetector;
 	private ViewGroup vg;
 	private ScrollView sw;
-
+	
+	Handler handler = new Handler();    
+    Runnable runnable = new Runnable() {    
+        @Override    
+        public void run() {    
+            recLen++;    
+            textView1.setText("" + recLen);    
+            handler.postDelayed(this, 1000);    
+        }    
+    };  
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -275,6 +288,8 @@ public class MainTab01 extends Fragment
 		});	
     	
     	
+    	
+    	
     	bt0.setId(9);
         bt0.setWidth(mMapView.getWidth());
         bt0.setText("三");
@@ -283,7 +298,7 @@ public class MainTab01 extends Fragment
         bt0.setHeight(50);
     	rl.addView(bt0, LayoutParams.WRAP_CONTENT, 50);
     	
-    	TextView textView1 = new TextView(view.getContext());
+    	textView1 = new TextView(view.getContext());
     	textView1.setId(1);
     	textView1.setText("中百仓储");
     	textView1.setTextSize(15.0f);
@@ -293,6 +308,9 @@ public class MainTab01 extends Fragment
     	LayoutParams param0 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		param0.addRule(RelativeLayout.BELOW,9);
         rl.addView(textView1,param0);
+        
+        
+        
         
         TextView textView2 = new TextView(view.getContext());
         textView2.setId(2);
@@ -376,6 +394,8 @@ public class MainTab01 extends Fragment
      
         translatAnimation.setFillAfter(true);
         sw.startAnimation(translatAnimation);
+        runnable.run(); 
+        
 //        mGestureDetector = new GestureDetector(view.getContext(), new DefaultGestureListener());
 //        sw.setOnTouchListener(new OnTouchListener(){
 //			@Override
