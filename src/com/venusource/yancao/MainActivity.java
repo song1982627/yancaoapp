@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	private LinearLayout mTabBtnFrd;
 	private LinearLayout mTabBtnAddress;
 	private LinearLayout mTabBtnSettings;
+	public static int screenWidth;
+	public static int screenHeight;
 	/**
 	 * 用于对Fragment进行管理
 	 */
@@ -40,10 +43,14 @@ public class MainActivity extends Activity implements OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);      
 		initViews();
 		fragmentManager = getFragmentManager();
 		setTabSelection(0);
+		DisplayMetrics dm = new DisplayMetrics();
+	    this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+	    screenWidth =dm.widthPixels;
+	    screenHeight =dm.heightPixels;
         
     }
 

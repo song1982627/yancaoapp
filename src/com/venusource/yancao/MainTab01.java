@@ -24,6 +24,7 @@ import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.model.LatLng;
 import com.venusource.yancao.adapter.GoodsAdapter;
 import com.venusource.yancao.adapter.GoodsOrderAdapter;
+import com.venusource.yancao.adapter.GoodsOrderCommitAdapter;
 import com.venusource.yancao.goods.MainGoodsActivity;
 import com.venusource.yancao.javabean.Goods;
 import com.venusource.yancao.zxing.CreateQRImage;
@@ -89,6 +90,7 @@ public class MainTab01 extends Fragment
 	private int recLen = 0;
 
 	private GestureDetector mGestureDetector;
+	private View ordeGoodsView;
 	private ViewGroup vg;
 	private View orderview;
 	private ScrollView sw;
@@ -98,7 +100,7 @@ public class MainTab01 extends Fragment
         @Override    
         public void run() {    
             recLen++;    
-            if (recLen == 10) {
+            if (recLen == 1) {
 //            	CreateQRImage cr = new CreateQRImage();
 //            	ImageView sweepIV = new ImageView(view.getContext());
 //            	LayoutParams params = new LayoutParams(300,300);
@@ -118,6 +120,44 @@ public class MainTab01 extends Fragment
             	ly.setVisibility(View.VISIBLE);
             	
             }
+            
+            if (recLen == 2) {
+            	mMapView.removeView(orderview);
+            	final View ordeGoodsCommitView = LayoutInflater.from(view.getContext()).inflate(
+        				R.layout.order_goods_commit, null);	
+            	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_name)).setText("中百仓储");
+            	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_address)).setText("地址：解放大道宝丰路");
+            	List<Goods> list = new ArrayList<Goods>();
+        		Goods goods = new Goods();
+        		goods.setGood_name("中南海(软包)/条" );
+        		goods.setCount(1);
+        		goods.setPrice(120 + "");
+        		list.add(goods);
+        		goods = new Goods();
+        		goods.setGood_name("长白山(软包)/包" );
+        		goods.setCount(1);
+        		goods.setPrice(20 + "");	
+        		list.add(goods);		
+        		GoodsOrderCommitAdapter goodsAdapter = new GoodsOrderCommitAdapter(ordeGoodsCommitView.getContext(), list);		
+        		ListView lw = (ListView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_list);
+        		lw.setAdapter(goodsAdapter);
+        		
+        		ImageView sweepIV = (ImageView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_pic);
+        		CreateQRImage cr = new CreateQRImage();
+        		cr.createQRImage("11111111", sweepIV);
+        		
+        		MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
+                builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
+                builder.width(mMapView.getWidth());
+                builder.height(400);
+                builder.point(new Point(0, mMapView.getHeight()));
+                builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
+                mMapView.addView(ordeGoodsCommitView, builder.build());
+                
+                handler.removeCallbacks(runnable);
+				recLen = 0;
+            }
+            
             order_bar_num.setText("" + recLen);    
             handler.postDelayed(this, 1000); 
            
@@ -260,7 +300,7 @@ public class MainTab01 extends Fragment
     //点击商户弹出图层
     public void addView() {
     	
-    	final View ordeGoodsView = LayoutInflater.from(view.getContext()).inflate(
+    	ordeGoodsView = LayoutInflater.from(view.getContext()).inflate(
 				R.layout.order_goods, null);	
     	((TextView)ordeGoodsView.findViewById(R.id.order_goods_name)).setText("中百仓储");
     	((TextView)ordeGoodsView.findViewById(R.id.order_goods_address)).setText("地址：解放大道宝丰路");
