@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="55dp"
     android:layout_alignParentBottom="true"
-    android:background="@drawable/bottom_bar" >
+    android:background="#ffffff" >
     
     <LinearLayout
         android:layout_width="fill_parent"
@@ -17,20 +17,25 @@
             android:layout_weight="1"
             android:descendantFocusability="beforeDescendants"
             android:gravity="center"
-            android:orientation="vertical" >
-
-            <ImageButton
-                android:id="@+id/btn_tab_goods_01"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                android:clickable="false"
-                android:src="@drawable/tab_weixin_pressed" />
-
+            android:orientation="vertical" 
+            android:background="@drawable/linearlayout"
+            >
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="发现" />
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:text="好评榜" 
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+
+            <ImageButton
+                android:id="@+id/goods_bottom_01"
+                android:layout_width="fill_parent"
+                android:layout_height="6dp"
+                android:background="@drawable/goods"
+                android:clickable="false" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -40,20 +45,21 @@
             android:layout_weight="1"
             android:descendantFocusability="beforeDescendants"
             android:gravity="center"
-            android:orientation="vertical" >
-
-            <ImageButton
-                android:id="@+id/btn_tab_goods_02"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                android:clickable="false"
-                android:src="@drawable/tab_find_frd_normal" />
-
+            android:orientation="vertical" 
+            android:background="@drawable/linearlayout">
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="活动" />
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:text="热销榜"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <ImageButton
+                android:id="@+id/goods_bottom_02"
+                android:layout_width="fill_parent"
+                android:layout_height="6dp"
+                android:background="#00000000"
+                android:clickable="false" />
         </LinearLayout>
 
         <LinearLayout
@@ -63,20 +69,22 @@
             android:layout_weight="1"
             android:descendantFocusability="beforeDescendants"
             android:gravity="center"
-            android:orientation="vertical" >
-
-            <ImageButton
-                android:id="@+id/btn_tab_goods_03"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                android:clickable="false"
-                android:src="@drawable/tab_address_normal" />
+            android:orientation="vertical" 
+            android:background="@drawable/linearlayout">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="沟通" />
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:text="当地特色"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <ImageButton
+                android:id="@+id/goods_bottom_03"
+                android:layout_width="fill_parent"
+                android:layout_height="6dp"
+                android:background="#00000000"
+                android:clickable="false" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,20 +94,22 @@
             android:layout_weight="1"
             android:descendantFocusability="beforeDescendants"
             android:gravity="center"
-            android:orientation="vertical" >
-
-            <ImageButton
-                android:id="@+id/btn_tab_goods_04"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                android:clickable="false"
-                android:src="@drawable/tab_settings_normal" />
+            android:orientation="vertical" 
+            android:background="@drawable/linearlayout">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="娱乐" />
+                android:layout_height="49dp"
+                android:gravity="center"
+                android:text="健康伙伴"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <ImageButton
+                android:id="@+id/goods_bottom_04"
+                android:layout_width="fill_parent"
+                android:layout_height="6dp"
+                android:background="#00000000"
+                android:clickable="false" />
         </LinearLayout>
     </LinearLayout>
 

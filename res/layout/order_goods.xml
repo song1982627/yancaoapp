@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/order_goods_button"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:background="#FFFFFF"
+        android:text="一" />
+
+    <TextView
+        style="@style/textStyle"
+        android:id="@+id/order_goods_name"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_gravity="left"
+        android:paddingLeft="10dp"
+        android:text="" />
+
+    <TextView
+        style="@style/textStyle"
+        android:id="@+id/order_goods_address"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:paddingLeft="10dp"
+        android:text="" />
+
+     <ListView
+	        android:id="@+id/order_goods_list"
+	        android:layout_width="wrap_content"
+	        android:layout_weight="3"
+	        android:background="#ffffff"
+	        android:layout_height="match_parent">
+	
+	 </ListView>
+    
+     <TextView
+        style="@style/textStyle"
+        android:id="@+id/order_goods_total"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:paddingLeft="10dp"
+        android:text="" />
+     <Button
+        android:id="@+id/order_goods_commit"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:background="#ff9900"
+        android:text="下单" />
+</LinearLayout>

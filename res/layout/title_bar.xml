@@ -1,16 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="45dp"
-    android:background="@drawable/title_bar" >
+    android:background="@drawable/title_bar"
+    android:orientation="horizontal" >
 
-    <TextView
+    <Space
+        android:id="@+id/Space1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="云游"
-        android:textColor="#fff"
-        android:textSize="20sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="fill_vertical"
+        android:layout_toRightOf="@+id/ImageButton1" />
+
+    <ImageButton
+        android:id="@+id/ImageButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/ImageButton2"
+        android:layout_marginLeft="16dp"
+        android:background="#0000"
+        android:clickable="false"
+        android:src="@drawable/other" />
+
+    <ImageButton
+        android:id="@+id/ImageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="19dp"
+        android:background="#0000"
+        android:clickable="false"
+        android:src="@drawable/user" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="2dp"
+        android:layout_height="12dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#bebbb7" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="17dp"
+        android:layout_toRightOf="@+id/imageButton3"
+        android:text="悬赏"
+        android:textColor="#dddddd"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView1"
+        android:layout_alignBottom="@+id/textView1"
+        android:layout_marginRight="17dp"
+        android:layout_toLeftOf="@+id/imageButton3"
+        android:text="寻找"
+        android:textColor="#d7a022"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
 </RelativeLayout>
