@@ -18,7 +18,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
  */
 public class CreateQRImage
 {
-	private int QR_WIDTH = 300, QR_HEIGHT = 300;
+	private int QR_WIDTH = 230, QR_HEIGHT = 230;
 	/**
 	 * @方法功能说明: 生成二维码图片,实际使用时要初始化sweepIV,不然会报空指针错误
 	 * @时间:2013-4-18上午11:14:16
