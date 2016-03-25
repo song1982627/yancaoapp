@@ -23,9 +23,7 @@ import com.venusource.yancao.R;
 import com.venusource.yancao.YcApplication;
 import com.venusource.yancao.javabean.Goods;
 
-/**
- * Created by bobge on 15/7/31.
- */
+
 public class GoodsOrderAdapter extends BaseAdapter {
 	
 
