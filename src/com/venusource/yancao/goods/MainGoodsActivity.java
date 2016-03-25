@@ -59,24 +59,24 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
     
     public void onClick(View v)
 	{
-		switch (v.getId())
-		{
-		case R.id.btn_tab_goods_01:
-			setTabSelection(0);
-			break;
-		case R.id.btn_tab_goods_02:
-			setTabSelection(1);
-			break;
-		case R.id.btn_tab_goods_03:
-			setTabSelection(2);
-			break;
-		case R.id.btn_tab_goods_04:
-			setTabSelection(3);
-			break;
-
-		default:
-			break;
-		}
+//		switch (v.getId())
+//		{
+//		case R.id.btn_tab_goods_01:
+//			setTabSelection(0);
+//			break;
+//		case R.id.btn_tab_goods_02:
+//			setTabSelection(1);
+//			break;
+//		case R.id.btn_tab_goods_03:
+//			setTabSelection(2);
+//			break;
+//		case R.id.btn_tab_goods_04:
+//			setTabSelection(3);
+//			break;
+//
+//		default:
+//			break;
+//		}
 	}
     
     /**

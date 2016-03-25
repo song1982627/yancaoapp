@@ -1,5 +1,9 @@
 package com.venusource.yancao;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -18,7 +22,11 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.model.LatLng;
+import com.venusource.yancao.adapter.GoodsAdapter;
+import com.venusource.yancao.adapter.GoodsOrderAdapter;
 import com.venusource.yancao.goods.MainGoodsActivity;
+import com.venusource.yancao.javabean.Goods;
+import com.venusource.yancao.zxing.CreateQRImage;
 
 
 import android.animation.Animator;
@@ -27,6 +35,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -47,6 +56,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -69,17 +79,18 @@ public class MainTab01 extends Fragment
 	BaiduMap mBaiduMap;
 	boolean isFirstLoc = true; // 是否首次定位
 	boolean show = true;
-	TextView textView1;
+	TextView order_bar_num;
 	
 	
 	private static final int paddingLeft = 100;
 	private static final int paddingTop = 220;
 	private static final int paddingRight = 100;
-	private static final int paddingBottom = 380;
+	private static final int paddingBottom = 350;
 	private int recLen = 0;
 
 	private GestureDetector mGestureDetector;
 	private ViewGroup vg;
+	private View orderview;
 	private ScrollView sw;
 	
 	Handler handler = new Handler();    
@@ -87,19 +98,38 @@ public class MainTab01 extends Fragment
         @Override    
         public void run() {    
             recLen++;    
-            textView1.setText("" + recLen);    
-            handler.postDelayed(this, 1000);    
+            if (recLen == 10) {
+//            	CreateQRImage cr = new CreateQRImage();
+//            	ImageView sweepIV = new ImageView(view.getContext());
+//            	LayoutParams params = new LayoutParams(300,300);
+//            	sweepIV.setLayoutParams(params);
+//            	cr.createQRImage("11111111", sweepIV);
+//            	MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
+//		        builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
+//		        builder.width(mMapView.getWidth());
+//		        builder.height(300);
+//		        builder.point(new Point(0,mMapView.getHeight()));
+//		        builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
+//		        mMapView.addView(sweepIV, builder.build());
+//		        mMapView.removeView(orderview);
+            	TextView vm = (TextView)orderview.findViewById(R.id.order_bar_t1);
+            	vm.setVisibility(View.VISIBLE);
+            	LinearLayout ly = (LinearLayout)orderview.findViewById(R.id.order_bar_t2);
+            	ly.setVisibility(View.VISIBLE);
+            	
+            }
+            order_bar_num.setText("" + recLen);    
+            handler.postDelayed(this, 1000); 
+           
         }    
     };  
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		YcApplication yc = (YcApplication)this.getActivity().getApplication();
+		
 		vg = container;
 		view = inflater.inflate(R.layout.main_tab_01, container, false);
-		
-		
 		// 地图初始化
 		mMapView = (MapView) view.findViewById(R.id.bmapView);
 
@@ -129,8 +159,8 @@ public class MainTab01 extends Fragment
 
 		TextView image = new TextView(view.getContext());
 		image.setId(1);
-		image.setWidth(92);
-		image.setHeight(92);
+		image.setWidth(70);
+		image.setHeight(62);
 		image.setGravity(Gravity.CENTER);
 		image.setText("4.7");
 		image.setTextColor(Color.parseColor("#FFFFFF"));
@@ -141,8 +171,9 @@ public class MainTab01 extends Fragment
 		param1.addRule(RelativeLayout.RIGHT_OF, 1);
 
 		TextView location1 = new TextView(view.getContext());
-		location1.setWidth(220);
+		location1.setWidth(200);
 		location1.setId(2);
+		location1.setTextSize(10);
 		location1.setText("中百仓储");
 		location1.setGravity(Gravity.CENTER);
 		rl.addView(location1, param1);
@@ -153,11 +184,12 @@ public class MainTab01 extends Fragment
 		param2.addRule(RelativeLayout.BELOW, 2);
 
 		TextView location2 = new TextView(view.getContext());
-		location2.setWidth(220);
+		location2.setWidth(200);
 		location2.setText("456m");
 		location2.setGravity(Gravity.CENTER);
+		location2.setTextSize(10);
 		rl.addView(location2, param2);
-		rl.setBackgroundResource(R.drawable.pop);
+		rl.setBackgroundResource(R.drawable.pop_1);
 		ly.addView(rl);
 		
 		BitmapDescriptor bd = BitmapDescriptorFactory.fromView(ly);
@@ -168,7 +200,7 @@ public class MainTab01 extends Fragment
 		mBaiduMap.addOverlay(ooA);
 		mBaiduMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 			public boolean onMarkerClick(final Marker marker) {
-				mBaiduMap.setPadding(paddingLeft, paddingTop, paddingRight,paddingBottom);
+				//mBaiduMap.setPadding(paddingLeft, paddingTop, paddingRight,paddingBottom);
 				addView();
 				return true;
 			}
@@ -208,261 +240,145 @@ public class MainTab01 extends Fragment
         }
     }
     
-    public void addView() {
-    	show = true;
     
-    	sw = (ScrollView)mMapView.findViewById(1001);
-    	if (sw != null){ 
-    		mMapView.removeView(sw);
-    	}
-    		
-    	sw = new ScrollView(mMapView.getContext());
-    	sw.setId(1001);
-    	sw.setVerticalScrollBarEnabled(false);
+    //获取商户默认选择烟列表数据
+    private void initListData(ListView listView,Context context,TextView orderGoodsTotal) {		
+		List<Goods> list = new ArrayList<Goods>();
+		Goods goods = new Goods();
+		goods.setGood_name("中南海(软包)/条" );
+		goods.setPrice(120 + "");
+		list.add(goods);
+		goods = new Goods();
+		goods.setGood_name("长白山(软包)/包" );
+		goods.setPrice(20 + "");	
+		list.add(goods);		
+		GoodsOrderAdapter goodsAdapter = new GoodsOrderAdapter(context, list,orderGoodsTotal);		
+		listView.setAdapter(goodsAdapter);
+	}	
+    
+    
+    //点击商户弹出图层
+    public void addView() {
     	
-    	RelativeLayout rl = new RelativeLayout(view.getContext());
+    	final View ordeGoodsView = LayoutInflater.from(view.getContext()).inflate(
+				R.layout.order_goods, null);	
+    	((TextView)ordeGoodsView.findViewById(R.id.order_goods_name)).setText("中百仓储");
+    	((TextView)ordeGoodsView.findViewById(R.id.order_goods_address)).setText("地址：解放大道宝丰路");
+    	initListData(((ListView)ordeGoodsView.findViewById(R.id.order_goods_list)),ordeGoodsView.getContext(),(TextView)ordeGoodsView.findViewById(R.id.order_goods_total));
     	
-    	Button bt0 = new Button(view.getContext());
-    	
-    	bt0.setOnClickListener(
-    		new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (show) {
-						Animation translatAnimation=new TranslateAnimation(0, 0, 0, 330);
-		    	        translatAnimation.setDuration(500);//设置动画持续时间为1秒
-		    	        translatAnimation.setRepeatCount(0);//设置重复次数 
-		   	     
-		    	        translatAnimation.setFillAfter(true);    	        
-		    	        translatAnimation  
-		                .setAnimationListener(new Animation.AnimationListener() {
-							@Override
-							public void onAnimationEnd(Animation arg0) {
-								mMapView.removeView(sw);
-								Button bt2 = new Button(view.getContext());
-								bt2.setId(19);
-						        bt2.setWidth(mMapView.getWidth());
-						        bt2.setText("三");
-						        bt2.setGravity(Gravity.CENTER);
-						        bt2.setBackgroundColor(Color.parseColor("white"));
-						        bt2.setHeight(50);
-						        bt2.setOnClickListener(
-						        		new OnClickListener() {
-						        			public void onClick(View v) {
-						        				addView();
-						        			}
-						        		}
-						        
-								);
-						    	//rl.addView(bt0, LayoutParams.WRAP_CONTENT, 50);
-						        MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
-						        builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
-						        builder.width(mMapView.getWidth());
-						        builder.height(50);
-						        builder.point(new Point(0,mMapView.getHeight()));
-						        builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
-						        
-						        mMapView.addView(bt2, builder.build());
-//				    			MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
-//					   		    builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
-//					   		    builder.width(mMapView.getWidth());
-//					   		    builder.height(paddingBottom);
-//					   		    builder.point(new Point(0, mMapView.getHeight()*2));
-//					   		    builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
-//					   		    mMapView.updateViewLayout(mMapView.findViewById(1001), builder.build());			   		    
-					   		    show = false;
-							}
-							@Override
-							public void onAnimationRepeat(Animation arg0) {
-								// TODO Auto-generated method stub
-								
-							}
-
-							@Override
-							public void onAnimationStart(Animation arg0) {
-								// TODO Auto-generated method stub
-								
-							}  });
-		    	      
-		    			
-		    	        sw.startAnimation(translatAnimation);	
-					} 
-					
-		   		    
-				}
-		});	
-    	
-    	
-    	
-    	
-    	bt0.setId(9);
-        bt0.setWidth(mMapView.getWidth());
-        bt0.setText("三");
-        bt0.setGravity(Gravity.CENTER);
-        bt0.setBackgroundColor(Color.parseColor("white"));
-        bt0.setHeight(50);
-    	rl.addView(bt0, LayoutParams.WRAP_CONTENT, 50);
-    	
-    	textView1 = new TextView(view.getContext());
-    	textView1.setId(1);
-    	textView1.setText("中百仓储");
-    	textView1.setTextSize(15.0f);
-    	textView1.setGravity(Gravity.LEFT);
-    	textView1.setTextColor(Color.BLACK);
-    	textView1.setBackgroundColor(Color.parseColor("#FFFFFF"));
-    	LayoutParams param0 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		param0.addRule(RelativeLayout.BELOW,9);
-        rl.addView(textView1,param0);
-        
-        
-        
-        
-        TextView textView2 = new TextView(view.getContext());
-        textView2.setId(2);
-    	textView2.setText("地址：解放大道宝丰路");
-    	textView2.setTextSize(15.0f);
-    	textView2.setGravity(Gravity.LEFT);
-    	textView2.setTextColor(Color.BLACK);
-    	textView2.setBackgroundColor(Color.parseColor("#FFFFFF"));
-    	LayoutParams param1 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		param1.addRule(RelativeLayout.BELOW, 1);
-        rl.addView(textView2,param1);
-        
-        TextView textView3 = new TextView(view.getContext());
-        textView3.setId(3);
-    	textView3.setText("长白山(软包)/包");
-    	textView3.setTextSize(15.0f);
-    	textView3.setGravity(Gravity.LEFT);
-    	textView3.setTextColor(Color.BLACK);
-    	textView3.setBackgroundColor(Color.parseColor("#FFFFFF"));
-    	LayoutParams param2 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		param2.addRule(RelativeLayout.BELOW, 2);
-        rl.addView(textView3,param2);
-        
-        TextView textView4 = new TextView(view.getContext());
-        textView4.setId(4);
-    	textView4.setText("中南海(软包)/条");
-    	textView4.setTextSize(15.0f);
-    	textView4.setGravity(Gravity.LEFT);
-    	textView4.setTextColor(Color.BLACK);
-    	textView4.setBackgroundColor(Color.parseColor("#FFFFFF"));
-    	LayoutParams param3 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		param3.addRule(RelativeLayout.BELOW, 3);
-        rl.addView(textView4,param3);
-        
-        TextView textView5 = new TextView(view.getContext());
-        textView5.setId(5);
-    	textView5.setText("共：90元");
-    	textView5.setTextSize(15.0f);
-    	textView5.setGravity(Gravity.LEFT);
-    	textView5.setTextColor(Color.BLACK);
-    	textView5.setBackgroundColor(Color.parseColor("#FFFFFF"));
-    	LayoutParams param4 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		param4.addRule(RelativeLayout.BELOW,4);
-        rl.addView(textView5,param4);
-        
-        Button bt = new Button(view.getContext());
-        bt.setOnClickListener(
-        		new OnClickListener() {
-    				@Override
-    				public void onClick(View v) {
-    					startActivity(new Intent(view.getContext(),MainGoodsActivity.class));
-    				}
-        		}
-        );
-        
-        
-        bt.setWidth(mMapView.getWidth());
-        bt.setText("下单");
-        bt.setGravity(Gravity.CENTER);
-        bt.setBackgroundColor(Color.parseColor("blue"));
-        LayoutParams param5 = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		param5.addRule(RelativeLayout.BELOW,5);
-        rl.addView(bt,param5);
-        
-        rl.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
+    	MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
         builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
         builder.width(mMapView.getWidth());
         builder.height(paddingBottom);
         builder.point(new Point(0, mMapView.getHeight()));
         builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
-       
-        sw.addView(rl);
+        mMapView.addView(ordeGoodsView, builder.build());
         
-        mMapView.addView(sw, builder.build());
-       
+	    Animation translatAnimation=new TranslateAnimation(0, 0, paddingBottom, 0);
+	    translatAnimation.setDuration(500);
+	    translatAnimation.setRepeatCount(0);
+	    translatAnimation.setFillAfter(true);
+	    ordeGoodsView.startAnimation(translatAnimation);
         
-        Animation translatAnimation=new TranslateAnimation(0, 0, 330, 0);
-        translatAnimation.setDuration(500);//设置动画持续时间为1秒
-        translatAnimation.setRepeatCount(0);//设置重复次数 
-     
-        translatAnimation.setFillAfter(true);
-        sw.startAnimation(translatAnimation);
+	    Button bc = (Button)ordeGoodsView.findViewById(R.id.order_goods_commit);
+	    bc.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				orderClick(ordeGoodsView);				
+			}	
+	    });
+	    
         
-        runnable.run(); 
+        Button bt = (Button)ordeGoodsView.findViewById(R.id.order_goods_button);
         
-//        mGestureDetector = new GestureDetector(view.getContext(), new DefaultGestureListener());
-//        sw.setOnTouchListener(new OnTouchListener(){
-//			@Override
-//			public boolean onTouch(View arg0, MotionEvent arg1) {
-//				return mGestureDetector.onTouchEvent(arg1);
-//			}
-//        });
-       
+        bt.setOnClickListener(new OnClickListener() {
+ 			@Override
+ 			public void onClick(View v) {
+ 				animationClick(ordeGoodsView);
+ 			}	
+ 		});  
     }
     
-    private class DefaultGestureListener extends SimpleOnGestureListener {
-    	@Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                float velocityY) {
-    		if (e2.getY()-e1.getY() > 20) {       			
-    			Animation translatAnimation=new TranslateAnimation(0, 0, 0, 330);
-    	        translatAnimation.setDuration(500);//设置动画持续时间为1秒
-    	        translatAnimation.setRepeatCount(0);//设置重复次数 
-   	     
-    	        //translatAnimation.setFillAfter(true);    	        
-    	        translatAnimation  
-                .setAnimationListener(new Animation.AnimationListener() {
-					@Override
-					public void onAnimationEnd(Animation arg0) {
-		    			MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
-			   		    builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
-			   		    builder.width(mMapView.getWidth());
-			   		    builder.height(paddingBottom);
-			   		    builder.point(new Point(0, mMapView.getHeight() + 330));
-			   		    builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
-			   		    mMapView.updateViewLayout(mMapView.findViewById(1001), builder.build());
-			   		    show = false;
-					}
-					@Override
-					public void onAnimationRepeat(Animation arg0) {
-						// TODO Auto-generated method stub
-						
-					}
+    
+    //下单事件
+    private void orderClick(final View ordeGoodsView) {
+		mMapView.removeView(ordeGoodsView);
+		orderview = LayoutInflater.from(view.getContext()).inflate(
+		R.layout.order_bar, null);
+		MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
+	    builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
+	    builder.width(mMapView.getWidth());
+	    builder.height(paddingBottom);
+	    builder.point(new Point(0, 0));
+	    builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_TOP);
+		mMapView.addView(orderview,builder.build());
+		order_bar_num = (TextView)orderview.findViewById(R.id.order_bar_num);
+		Button cancel = (Button)orderview.findViewById(R.id.order_goods_cancel);
+		cancel.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					mMapView.removeView(orderview);
+					handler.removeCallbacks(runnable);
+					recLen = 0;
+					
+				}	
+		    });
+		runnable.run();
+	}
+    
+    //动画效果
+	private void animationClick(final View ordeGoodsView) {
+		if (show) {
+			Animation translatAnimation = new TranslateAnimation(0, 0, 0,
+					paddingBottom);
+			translatAnimation.setDuration(500);
+			translatAnimation.setRepeatCount(0);
+			translatAnimation.setFillAfter(false);
+			ordeGoodsView.startAnimation(translatAnimation);
+			translatAnimation
+					.setAnimationListener(new Animation.AnimationListener() {
+						@Override
+						public void onAnimationEnd(Animation arg0) {
+							MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
+							builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
+							builder.width(mMapView.getWidth());
+							builder.height(40);
+							builder.point(new Point(0, mMapView.getHeight()));
+							builder.align(MapViewLayoutParams.ALIGN_LEFT,
+									MapViewLayoutParams.ALIGN_BOTTOM);
+							mMapView.updateViewLayout(ordeGoodsView,
+									builder.build());
 
-					@Override
-					public void onAnimationStart(Animation arg0) {
-						// TODO Auto-generated method stub
-						
-					}  });
-    	      
-    			
-    	        sw.startAnimation(translatAnimation);			
-    		}     	
-    		else  {    			
-    			MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
-	   		    builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
-	   		    builder.width(mMapView.getWidth());
-	   		    builder.height(paddingBottom);
-	   		    builder.point(new Point(0, mMapView.getHeight()));
-	   		    builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
-	   		    mMapView.updateViewLayout(mMapView.findViewById(1001), builder.build());   	   		
-    		}
-    		//Toast.makeText(view.getContext(), "e1.getY():"+e1.getY()+",e2.getY():"+e2.getY(), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
+						}
 
-	
+						@Override
+						public void onAnimationRepeat(Animation arg0) {
+							// TODO Auto-generated method stub
+
+						}
+
+						@Override
+						public void onAnimationStart(Animation arg0) {
+							// TODO Auto-generated method stub
+						}
+					});
+			show = false;
+		} else {
+			Animation translatAnimation = new TranslateAnimation(0, 0,
+					paddingBottom, 0);
+			translatAnimation.setDuration(500);
+			translatAnimation.setRepeatCount(0);
+			translatAnimation.setFillAfter(false);
+			ordeGoodsView.startAnimation(translatAnimation);
+			MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
+			builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
+			builder.width(mMapView.getWidth());
+			builder.height(paddingBottom);
+			builder.point(new Point(0, mMapView.getHeight()));
+			builder.align(MapViewLayoutParams.ALIGN_LEFT,
+					MapViewLayoutParams.ALIGN_BOTTOM);
+			mMapView.updateViewLayout(ordeGoodsView, builder.build());
+			show = true;
+		}
+	}
 }
