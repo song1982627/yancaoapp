@@ -78,9 +78,11 @@ public class MainTab01 extends Fragment
 	BitmapDescriptor mCurrentMarker;
 	MapView mMapView;
 	BaiduMap mBaiduMap;
-	boolean isFirstLoc = true; // ÊÇ·ñÊ×´Î¶¨Î»
+	boolean isFirstLoc = true;
 	boolean show = true;
 	TextView order_bar_num;
+	private double latitude;
+	private double longitude;
 	
 	
 	private static final int paddingLeft = 100;
@@ -100,7 +102,7 @@ public class MainTab01 extends Fragment
         @Override    
         public void run() {    
             recLen++;    
-            if (recLen == 1) {
+            if (recLen == 10) {
 //            	CreateQRImage cr = new CreateQRImage();
 //            	ImageView sweepIV = new ImageView(view.getContext());
 //            	LayoutParams params = new LayoutParams(300,300);
@@ -121,20 +123,20 @@ public class MainTab01 extends Fragment
             	
             }
             
-            if (recLen == 2) {
+            if (recLen == 15) {
             	mMapView.removeView(orderview);
             	final View ordeGoodsCommitView = LayoutInflater.from(view.getContext()).inflate(
         				R.layout.order_goods_commit, null);	
-            	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_name)).setText("ÖĞ°Ù²Ö´¢");
-            	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_address)).setText("µØÖ·£º½â·Å´óµÀ±¦·áÂ·");
+            	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_name)).setText("ä¸­ç™¾ä»“å‚¨");
+            	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_address)).setText("åœ°å€ï¼šè§£æ”¾å¤§é“å®ä¸°è·¯");
             	List<Goods> list = new ArrayList<Goods>();
         		Goods goods = new Goods();
-        		goods.setGood_name("ÖĞÄÏº£(Èí°ü)/Ìõ" );
+        		goods.setGood_name("ä¸­å—æµ·(è½¯åŒ…)/æ¡" );
         		goods.setCount(1);
         		goods.setPrice(120 + "");
         		list.add(goods);
         		goods = new Goods();
-        		goods.setGood_name("³¤°×É½(Èí°ü)/°ü" );
+        		goods.setGood_name("é•¿ç™½å±±(è½¯åŒ…)/åŒ…" );
         		goods.setCount(1);
         		goods.setPrice(20 + "");	
         		list.add(goods);		
@@ -145,6 +147,15 @@ public class MainTab01 extends Fragment
         		ImageView sweepIV = (ImageView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_pic);
         		CreateQRImage cr = new CreateQRImage();
         		cr.createQRImage("11111111", sweepIV);
+   		
+        		sweepIV.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						handler.removeCallbacks(runnable);
+						recLen = 0;
+						mMapView.removeView(ordeGoodsCommitView);		
+					}	
+			    });
         		
         		MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
                 builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
@@ -170,7 +181,7 @@ public class MainTab01 extends Fragment
 		
 		vg = container;
 		view = inflater.inflate(R.layout.main_tab_01, container, false);
-		// µØÍ¼³õÊ¼»¯
+	
 		mMapView = (MapView) view.findViewById(R.id.bmapView);
 
 		View child = mMapView.getChildAt(1);
@@ -180,19 +191,24 @@ public class MainTab01 extends Fragment
 		}
 		mMapView.showZoomControls(false);
 		mBaiduMap = mMapView.getMap();
-		// ¿ªÆô¶¨Î»Í¼²ã
+		
 		mBaiduMap.setMyLocationEnabled(true);
-		// ¶¨Î»³õÊ¼»¯
+	
 		mLocClient = new LocationClient(view.getContext());
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
-		option.setOpenGps(true); // ´ò¿ªgps
-		option.setCoorType("bd09ll"); // ÉèÖÃ×ø±êÀàĞÍ
+		option.setOpenGps(true); 
+		option.setCoorType("bd09ll"); 
 		option.setScanSpan(1000);
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 		
-		
+		return view;
+
+	}
+
+	//å®šä½äº§ç”Ÿçš„å•†æˆ·
+	private void setMapView() {
 		LinearLayout ly = new LinearLayout(view.getContext());
 
 		RelativeLayout rl = new RelativeLayout(view.getContext());
@@ -214,7 +230,7 @@ public class MainTab01 extends Fragment
 		location1.setWidth(200);
 		location1.setId(2);
 		location1.setTextSize(10);
-		location1.setText("ÖĞ°Ù²Ö´¢");
+		location1.setText("ä¸­ç™¾ä»“å‚¨");
 		location1.setGravity(Gravity.CENTER);
 		rl.addView(location1, param1);
 
@@ -225,7 +241,7 @@ public class MainTab01 extends Fragment
 
 		TextView location2 = new TextView(view.getContext());
 		location2.setWidth(200);
-		location2.setText("456m");
+		location2.setText("45m");
 		location2.setGravity(Gravity.CENTER);
 		location2.setTextSize(10);
 		rl.addView(location2, param2);
@@ -234,7 +250,9 @@ public class MainTab01 extends Fragment
 		
 		BitmapDescriptor bd = BitmapDescriptorFactory.fromView(ly);
 		
-		LatLng llA = new LatLng(30.583970, 114.259781);	
+		//LatLng llA = new LatLng(30.583970, 114.259781);	
+		LatLng llA = new LatLng(latitude,longitude);	
+		
 		MarkerOptions ooA = new MarkerOptions().position(llA).icon(bd)
 				.anchor(0.2f, 1.0f).zIndex(9);
 		mBaiduMap.addOverlay(ooA);
@@ -245,24 +263,21 @@ public class MainTab01 extends Fragment
 				return true;
 			}
 		});
-		return view;
-
 	}
 	
 	 /**
-     * ¶¨Î»SDK¼àÌıº¯Êı
+     * å®šä½SDKç›‘å¬å‡½æ•°
      */
     public class MyLocationListenner implements BDLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-            // map view Ïú»Ùºó²»ÔÚ´¦ÀíĞÂ½ÓÊÕµÄÎ»ÖÃ
+         
             if (location == null || mMapView == null) {
                 return;
             }
             MyLocationData locData = new MyLocationData.Builder()
-                    .accuracy(location.getRadius())
-                            // ´Ë´¦ÉèÖÃ¿ª·¢Õß»ñÈ¡µ½µÄ·½ÏòĞÅÏ¢£¬Ë³Ê±Õë0-360
+                    .accuracy(location.getRadius())                          
                     .direction(100).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             mBaiduMap.setMyLocationData(locData);
@@ -273,7 +288,14 @@ public class MainTab01 extends Fragment
                 MapStatus.Builder builder = new MapStatus.Builder();
                 builder.target(ll).zoom(18.0f);
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+                
+                latitude = location.getLatitude() + 0.0005;
+                longitude = location.getLongitude() + 0.0005;
+                setMapView();
             }
+          
+           
+            
         }
 
         public void onReceivePoi(BDLocation poiLocation) {
@@ -281,15 +303,15 @@ public class MainTab01 extends Fragment
     }
     
     
-    //»ñÈ¡ÉÌ»§Ä¬ÈÏÑ¡ÔñÑÌÁĞ±íÊı¾İ
+    //è·å–å•†æˆ·é»˜è®¤é€‰æ‹©çƒŸåˆ—è¡¨æ•°æ®
     private void initListData(ListView listView,Context context,TextView orderGoodsTotal) {		
 		List<Goods> list = new ArrayList<Goods>();
 		Goods goods = new Goods();
-		goods.setGood_name("ÖĞÄÏº£(Èí°ü)/Ìõ" );
+		goods.setGood_name("ä¸­å—æµ·(è½¯åŒ…)/æ¡" );
 		goods.setPrice(120 + "");
 		list.add(goods);
 		goods = new Goods();
-		goods.setGood_name("³¤°×É½(Èí°ü)/°ü" );
+		goods.setGood_name("é•¿ç™½å±±(è½¯åŒ…)/åŒ…" );
 		goods.setPrice(20 + "");	
 		list.add(goods);		
 		GoodsOrderAdapter goodsAdapter = new GoodsOrderAdapter(context, list,orderGoodsTotal);		
@@ -297,13 +319,15 @@ public class MainTab01 extends Fragment
 	}	
     
     
-    //µã»÷ÉÌ»§µ¯³öÍ¼²ã
+    //ç‚¹å‡»å•†æˆ·å¼¹å‡ºå›¾å±‚
     public void addView() {
-    	
+        if (ordeGoodsView != null) {
+        	mMapView.removeView(ordeGoodsView);
+        }
     	ordeGoodsView = LayoutInflater.from(view.getContext()).inflate(
 				R.layout.order_goods, null);	
-    	((TextView)ordeGoodsView.findViewById(R.id.order_goods_name)).setText("ÖĞ°Ù²Ö´¢");
-    	((TextView)ordeGoodsView.findViewById(R.id.order_goods_address)).setText("µØÖ·£º½â·Å´óµÀ±¦·áÂ·");
+    	((TextView)ordeGoodsView.findViewById(R.id.order_goods_name)).setText("ä¸­ç™¾ä»“å‚¨");
+    	((TextView)ordeGoodsView.findViewById(R.id.order_goods_address)).setText("åœ°å€ï¼šè§£æ”¾å¤§é“å®ä¸°è·¯");
     	initListData(((ListView)ordeGoodsView.findViewById(R.id.order_goods_list)),ordeGoodsView.getContext(),(TextView)ordeGoodsView.findViewById(R.id.order_goods_total));
     	
     	MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
@@ -340,7 +364,7 @@ public class MainTab01 extends Fragment
     }
     
     
-    //ÏÂµ¥ÊÂ¼ş
+    //ä¸‹å•äº‹ä»¶
     private void orderClick(final View ordeGoodsView) {
 		mMapView.removeView(ordeGoodsView);
 		orderview = LayoutInflater.from(view.getContext()).inflate(
@@ -366,7 +390,7 @@ public class MainTab01 extends Fragment
 		runnable.run();
 	}
     
-    //¶¯»­Ğ§¹û
+    //åŠ¨ç”»æ•ˆæœ
 	private void animationClick(final View ordeGoodsView) {
 		if (show) {
 			Animation translatAnimation = new TranslateAnimation(0, 0, 0,
