@@ -29,7 +29,7 @@ public class GoodsOrderCommitAdapter extends BaseAdapter {
 	
 	public GoodsOrderCommitAdapter(Context context,List<Goods> list) {	
 		int count = 0;
-		double price = 0d;
+		int price = 0;
 		this.context = context;
 		this.list = new ArrayList<Goods>();
 		Goods good = new Goods();
@@ -39,7 +39,7 @@ public class GoodsOrderCommitAdapter extends BaseAdapter {
 			for (Goods gd : list) {
 				this.list.add(gd);
 				count += gd.getCount();
-				price += Double.valueOf(gd.getPrice());
+				price += (Integer.valueOf(gd.getPrice()) * gd.getCount());
 			}
 		}
 		good = new Goods();

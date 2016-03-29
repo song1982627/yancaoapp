@@ -1,6 +1,8 @@
 package com.venusource.yancao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.venusource.yancao.javabean.Goods;
@@ -8,41 +10,60 @@ import com.venusource.yancao.javabean.Goods;
 import android.app.Application;
 
 public class YcApplication extends Application{
-	private Map<String,Goods> gs;
-
-	public Map<String,Goods> getGs() {
+	private List<Goods> gs;
+	
+	public List<Goods> getGs() {
 		return gs;
 	}
 
-	public void setGs(Map<String,Goods> gs) {
+
+	public void setGs(List<Goods> gs) {
 		this.gs = gs;
 	}
 	
-	public int goodsNum = 0;
-	
-	public double goodsPrice = 0d;
-	
-	
-	
-	public int getGoodsNum() {
-		return goodsNum;
+	public int[] getTotal() {
+		int[] total = {0,0};
+		if (gs != null && gs.size() > 0) {		
+			for (Goods good : gs) {
+				total[0] += good.getCount();
+				total[1] += Integer.parseInt(good.getPrice() ) * good.getCount();
+			}
+		}
+		return total;
 	}
-
-	public void setGoodsNum(int goodsNum) {
-		this.goodsNum = goodsNum;
+	
+	public List<Goods> getNewGS(List<Goods> newgs) {
+		if (gs == null || gs.size() < 1) {
+			setGs(newgs);
+		} else if (newgs != null && newgs.size() > 0) {
+			Map<String ,Goods> gsMap = new HashMap<String ,Goods>();
+			for (Goods gd : gs) {
+				gsMap.put(gd.getId(), gd);
+			}
+			for (Goods gd : newgs) {
+				if (!gsMap.containsKey(gd.getId())) {
+					gs.add(gd);
+				}
+			}			
+		}
+		return gs;
 	}
-
-	public double getGoodsPrice() {
-		return goodsPrice;
-	}
-
-	public void setGoodsPrice(double goodsPrice) {
-		this.goodsPrice = goodsPrice;
+	
+	public List<Goods> getCountGsList() {
+		List<Goods> countGsList = new ArrayList<Goods>();
+		if (gs != null && gs.size() > 0) {
+			for (Goods gd : gs) {
+				if (gd.getCount() > 0) {
+					countGsList.add(gd);
+				}
+			}
+		}
+		return countGsList;
 	}
 
 	@Override
     public void onCreate() {
         super.onCreate();     
-        this.setGs(new HashMap<String,Goods>());
+        this.setGs(new ArrayList<Goods>());
     }
 }

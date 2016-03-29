@@ -92,30 +92,20 @@ public class MainTab01 extends Fragment
 	private int recLen = 0;
 
 	private GestureDetector mGestureDetector;
-	private View ordeGoodsView;
+	private View ordeGoodsView; //商户选烟图层
 	private ViewGroup vg;
-	private View orderview;
+	private View orderview;//等待图层
+	private View ordeGoodsCommitView;//订单图层
 	private ScrollView sw;
+	private boolean isClick = true;
+	private YcApplication yc;
 	
-	Handler handler = new Handler();    
-    Runnable runnable = new Runnable() {    
+	private Handler handler = new Handler();    
+	private Runnable runnable = new Runnable() {    
         @Override    
         public void run() {    
             recLen++;    
             if (recLen == 10) {
-//            	CreateQRImage cr = new CreateQRImage();
-//            	ImageView sweepIV = new ImageView(view.getContext());
-//            	LayoutParams params = new LayoutParams(300,300);
-//            	sweepIV.setLayoutParams(params);
-//            	cr.createQRImage("11111111", sweepIV);
-//            	MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
-//		        builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
-//		        builder.width(mMapView.getWidth());
-//		        builder.height(300);
-//		        builder.point(new Point(0,mMapView.getHeight()));
-//		        builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
-//		        mMapView.addView(sweepIV, builder.build());
-//		        mMapView.removeView(orderview);
             	TextView vm = (TextView)orderview.findViewById(R.id.order_bar_t1);
             	vm.setVisibility(View.VISIBLE);
             	LinearLayout ly = (LinearLayout)orderview.findViewById(R.id.order_bar_t2);
@@ -123,39 +113,30 @@ public class MainTab01 extends Fragment
             	
             }
             
-            if (recLen == 15) {
-            	mMapView.removeView(orderview);
-            	final View ordeGoodsCommitView = LayoutInflater.from(view.getContext()).inflate(
+            if (recLen == 15) {            	
+            	mMapView.removeView(orderview);           	
+            	ordeGoodsCommitView = LayoutInflater.from(view.getContext()).inflate(
         				R.layout.order_goods_commit, null);	
             	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_name)).setText("中百仓储");
             	((TextView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_address)).setText("地址：解放大道宝丰路");
-            	List<Goods> list = new ArrayList<Goods>();
-        		Goods goods = new Goods();
-        		goods.setGood_name("中南海(软包)/条" );
-        		goods.setCount(1);
-        		goods.setPrice(120 + "");
-        		list.add(goods);
-        		goods = new Goods();
-        		goods.setGood_name("长白山(软包)/包" );
-        		goods.setCount(1);
-        		goods.setPrice(20 + "");	
-        		list.add(goods);		
-        		GoodsOrderCommitAdapter goodsAdapter = new GoodsOrderCommitAdapter(ordeGoodsCommitView.getContext(), list);		
+            		
+        		GoodsOrderCommitAdapter goodsAdapter = new GoodsOrderCommitAdapter(ordeGoodsCommitView.getContext(), yc.getCountGsList());		
         		ListView lw = (ListView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_list);
         		lw.setAdapter(goodsAdapter);
         		
         		ImageView sweepIV = (ImageView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_pic);
-        		CreateQRImage cr = new CreateQRImage();
-        		cr.createQRImage("11111111", sweepIV);
-   		
         		sweepIV.setOnClickListener(new OnClickListener() {
 					@Override
-					public void onClick(View arg0) {
+					public void onClick(View arg0) {	
 						handler.removeCallbacks(runnable);
 						recLen = 0;
-						mMapView.removeView(ordeGoodsCommitView);		
+						mMapView.removeView(ordeGoodsCommitView);	
+						isClick = true;
+						yc.setGs(new ArrayList<Goods>());
 					}	
 			    });
+        		CreateQRImage cr = new CreateQRImage();
+        		cr.createQRImage("11111111", sweepIV);   		
         		
         		MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
                 builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
@@ -165,8 +146,7 @@ public class MainTab01 extends Fragment
                 builder.align(MapViewLayoutParams.ALIGN_LEFT, MapViewLayoutParams.ALIGN_BOTTOM);
                 mMapView.addView(ordeGoodsCommitView, builder.build());
                 
-                handler.removeCallbacks(runnable);
-				recLen = 0;
+                
             }
             
             order_bar_num.setText("" + recLen);    
@@ -178,6 +158,7 @@ public class MainTab01 extends Fragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		yc = (YcApplication)getActivity().getApplication();
 		
 		vg = container;
 		view = inflater.inflate(R.layout.main_tab_01, container, false);
@@ -304,26 +285,52 @@ public class MainTab01 extends Fragment
     
     
     //获取商户默认选择烟列表数据
-    private void initListData(ListView listView,Context context,TextView orderGoodsTotal) {		
+    private void initListData(ListView listView,Context context,TextView orderGoodsTotal) {	
+    	isClick = true;
 		List<Goods> list = new ArrayList<Goods>();
 		Goods goods = new Goods();
+		goods.setId("ID-1");
 		goods.setGood_name("中南海(软包)/条" );
+		goods.setDescrible("商户1");
 		goods.setPrice(120 + "");
 		list.add(goods);
 		goods = new Goods();
-		goods.setGood_name("长白山(软包)/包" );
-		goods.setPrice(20 + "");	
+		goods.setId("ID-2");
+		goods.setGood_name("长白山(软包)/条" );
+		goods.setDescrible("商户1");
+		goods.setPrice(160 + "");	
 		list.add(goods);		
-		GoodsOrderAdapter goodsAdapter = new GoodsOrderAdapter(context, list,orderGoodsTotal);		
+		GoodsOrderAdapter goodsAdapter = new GoodsOrderAdapter(context, yc.getNewGS(list),orderGoodsTotal);		
 		listView.setAdapter(goodsAdapter);
 	}	
     
+    //选择商品列表返回数据
+    private void choseListData(ListView listView,Context context,TextView orderGoodsTotal) {	    			
+		GoodsOrderAdapter goodsAdapter = new GoodsOrderAdapter(context, yc.getCountGsList(),orderGoodsTotal);		
+		listView.setAdapter(goodsAdapter);
+		if (yc.getGs() != null && yc.getGs().size() > 0) {
+			int[] total = yc.getTotal();
+			if (total[1] > 0) {
+				orderGoodsTotal.setText("总价:" + total[1] + "元");
+			} else {
+				orderGoodsTotal.setText("");
+			}
+			goodsAdapter.setBuyNum(total[0]);
+			goodsAdapter.setTotalPrice(total[1]);
+		}
+		
+	}	
+   
     
     //点击商户弹出图层
     public void addView() {
+    	if (!isClick) {
+    		return;
+    	} 	   	
         if (ordeGoodsView != null) {
-        	mMapView.removeView(ordeGoodsView);
+        	mMapView.removeView(ordeGoodsView);      	
         }
+             
     	ordeGoodsView = LayoutInflater.from(view.getContext()).inflate(
 				R.layout.order_goods, null);	
     	((TextView)ordeGoodsView.findViewById(R.id.order_goods_name)).setText("中百仓储");
@@ -348,7 +355,7 @@ public class MainTab01 extends Fragment
 	    bc.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				orderClick(ordeGoodsView);				
+				orderClick();				
 			}	
 	    });
 	    
@@ -361,11 +368,23 @@ public class MainTab01 extends Fragment
  				animationClick(ordeGoodsView);
  			}	
  		});  
+        
+        Button be = (Button)ordeGoodsView.findViewById(R.id.order_goods_choose);
+        
+        be.setOnClickListener(new OnClickListener() {
+ 			@Override
+ 			public void onClick(View v) {
+ 				Intent in = new Intent();  
+                in.setClassName( view.getContext(), "com.venusource.yancao.goods.MainGoodsActivity" );                          
+                startActivityForResult(in ,1);  
+ 			}	
+ 		});  
     }
     
     
     //下单事件
-    private void orderClick(final View ordeGoodsView) {
+    private void orderClick() {
+    	isClick = false;
 		mMapView.removeView(ordeGoodsView);
 		orderview = LayoutInflater.from(view.getContext()).inflate(
 		R.layout.order_bar, null);
@@ -381,9 +400,11 @@ public class MainTab01 extends Fragment
 		cancel.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					mMapView.removeView(orderview);
+					isClick = true;
+					mMapView.removeView(orderview);			
 					handler.removeCallbacks(runnable);
 					recLen = 0;
+					yc.setGs(new ArrayList<Goods>());
 					
 				}	
 		    });
@@ -436,6 +457,7 @@ public class MainTab01 extends Fragment
 			ordeGoodsView.startAnimation(translatAnimation);
 			MapViewLayoutParams.Builder builder = new MapViewLayoutParams.Builder();
 			builder.layoutMode(MapViewLayoutParams.ELayoutMode.absoluteMode);
+			
 			builder.width(mMapView.getWidth());
 			builder.height(paddingBottom);
 			builder.point(new Point(0, mMapView.getHeight()));
@@ -445,4 +467,16 @@ public class MainTab01 extends Fragment
 			show = true;
 		}
 	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode,Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if (data != null && data.hasExtra("GOODSBACK")) {
+			choseListData(((ListView)ordeGoodsView.findViewById(R.id.order_goods_list)),ordeGoodsView.getContext(),(TextView)ordeGoodsView.findViewById(R.id.order_goods_total));
+	    	
+		}
+		
+		
+	}
+	
 }

@@ -19,10 +19,12 @@ import com.venusource.yancao.adapter.GoodsAdapter;
 import com.venusource.yancao.javabean.Goods;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -39,61 +41,84 @@ import android.widget.TextView;
 
 public class GoodsTab01 extends Fragment {
 
-	private ListView listView2;
+	private ListView listView;
 
-	// private List<Catogray> list;
-
-	
-	private GoodsAdapter goodsAdapter;
 	private View view;
 	private ViewGroup rootView;
-	private ImageView shopCart;// ¹ºÎï³µ
+	private ImageView shopCart;
 	private BadgeView buyNumBt;
-	private BadgeView buyNumView;// ¹ºÎï³µÉÏµÄÊýÁ¿±êÇ©
+	private BadgeView buyNumView;
 	
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = container;
+	
 		view = inflater.inflate(R.layout.main_tab_goods_01, container, false);
-		listView2 = (ListView) view.findViewById(R.id.listview_2);
+		listView = (ListView) view.findViewById(R.id.listview_2);
 		shopCart = (ImageView) view.findViewById(R.id.iv_add_cart);
 		buyNumView = (BadgeView) view.findViewById(R.id.tv_count_price);
 		buyNumBt = (BadgeView)view.findViewById(R.id.iv_add_num);
 		YcApplication yc = (YcApplication)this.getActivity().getApplication();
 		initListData(yc);	
-		if (yc.getGoodsNum() > 0) {
-			buyNumView.setText("×Ü¼Û:" + yc.getGoodsPrice() + "Ôª");;//
-			buyNumView.setBadgePosition(BadgeView.POSITION_CENTER);
-			buyNumView.show();
-			buyNumBt.setText(yc.getGoodsNum() + "");
-		}
+		
+		
+		Button bt = (Button)view.findViewById(R.id.goods_ok_01);
+        
+        bt.setOnClickListener(new OnClickListener() {
+ 			@Override
+ 			public void onClick(View v) {
+ 				 Intent intent=new Intent();   
+                 intent.putExtra("GOODSBACK", "1");                 
+                 getActivity().setResult(1, intent);   
+                 getActivity().finish();   
+ 			}	
+ 		});  
+		
 		return view;
 
 	}
 
 	private void initListData(YcApplication yc) {
-		Map<String,Goods> gs = yc.getGs();
-		
 		List<Goods> list = new ArrayList<Goods>();
-		for (int j = 0; j < 25; j++) {
-			String id = "ID-" + j;
-			Goods goods = new Goods();
-			if (gs.containsKey(id)) {
-				goods.setCount(gs.get(id).getCount());
-			}
-			
-			goods.setId(id);
-			goods.setGood_name("»õÆ·" + j);
-			goods.setDescrible("ÃèÊö" + j);
-			goods.setPrice(20 + j + "");
-			list.add(goods);
+		Goods goods = new Goods();
+		goods.setId("ID-1");
+		goods.setGood_name("ä¸­å—æµ·(è½¯åŒ…)/æ¡" );
+		goods.setDescrible("å•†æˆ·1");
+		goods.setPrice(120 + "");
+		list.add(goods);
+		goods = new Goods();
+		goods.setId("ID-2");
+		goods.setGood_name("é•¿ç™½å±±(è½¯åŒ…)/æ¡" );
+		goods.setDescrible("å•†æˆ·1");
+		goods.setPrice(160 + "");	
+		list.add(goods);	
+		goods = new Goods();
+		goods.setId("ID-3");
+		goods.setGood_name("é»„é¹¤æ¥¼(è½¯åŒ…)/æ¡" );
+		goods.setDescrible("å•†æˆ·1");
+		goods.setPrice(170 + "");	
+		list.add(goods);
+		goods = new Goods();
+		goods.setId("ID-4");
+		goods.setGood_name("ä¸­åŽ(è½¯åŒ…)/æ¡" );
+		goods.setDescrible("å•†æˆ·1");
+		goods.setPrice(270 + "");	
+		list.add(goods);
+	
+		GoodsAdapter goodsAdapter = new GoodsAdapter(view.getContext(), yc.getNewGS(list),rootView,shopCart,buyNumView,buyNumBt,yc);
+		
+		listView.setAdapter(goodsAdapter);
+		
+		if (yc.getGs() != null && yc.getGs().size() > 0) {
+			int[] total = yc.getTotal();
+			buyNumView.setText("æ€»ä»·:" + total[1] + "å…ƒ");;//
+			buyNumView.setBadgePosition(BadgeView.POSITION_CENTER);
+			buyNumView.show();
+			buyNumBt.setText(total[0] + "");
+			goodsAdapter.setBuyNum(total[0]);
+			goodsAdapter.setTotalPrice(total[1]);
 		}
-		
-		
-		goodsAdapter = new GoodsAdapter(view.getContext(), list,rootView,shopCart,buyNumView,buyNumBt,yc);
-		
-		listView2.setAdapter(goodsAdapter);
 
 	}	
 }

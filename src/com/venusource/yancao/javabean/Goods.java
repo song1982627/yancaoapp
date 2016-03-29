@@ -1,18 +1,16 @@
 package com.venusource.yancao.javabean;
 
-/**
- * Created by bobge on 15/7/31.
- */
+
 public class Goods {
-	private String id;
+	private String id;//pk
 	
-    private String good_name;
+    private String good_name;//商品名称
 
-    private String price;
+    private String price;//单价
 
-    private String describle;
+    private String describle;//描述
 
-    private int count;
+    private int count = 0;//数量
 
     public int getCount() {
         return count;

@@ -30,7 +30,24 @@ public class GoodsOrderAdapter extends BaseAdapter {
 	private List<Goods> list;
 	private Context context;	
 	private TextView orderGoodsTotal;
-	private double totalPrice=0d;
+	private int buyNum = 0;// 购买数量
+	private int totalPrice=0;//总价
+
+	public int getBuyNum() {
+		return buyNum;
+	}
+
+	public void setBuyNum(int buyNum) {
+		this.buyNum = buyNum;
+	}
+
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 
 	public GoodsOrderAdapter(Context context,List<Goods> list,TextView orderGoodsTotal) {	
 		this.context = context;
@@ -67,51 +84,56 @@ public class GoodsOrderAdapter extends BaseAdapter {
 			viewholder.et_acount = (EditText) view.findViewById(R.id.order_goods_count);
 			view.setTag(viewholder);
 			
-		} else
+		} else {
 			viewholder = (ViewOrderGoods) view.getTag();
-			viewholder.tv_name.setText(list.get(position).getGood_name());		
-			viewholder.iv_add.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int count = list.get(position).getCount();
-					count++;							
-					totalPrice += Double.valueOf(list.get(position).getPrice());
-					orderGoodsTotal.setText("总价:" + totalPrice + "元");
-					list.get(position).setCount(count);
-					viewholder.et_acount.setVisibility(View.VISIBLE);
-					viewholder.iv_remove.setVisibility(View.VISIBLE);
-					viewholder.et_acount.setText(list.get(position).getCount() + "");		
-				}
-			});
-			
-			viewholder.iv_remove.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int count = list.get(position).getCount();
-					count--;
-					totalPrice -= Double.valueOf(list.get(position).getPrice());				
-					orderGoodsTotal.setText("总价:" + totalPrice + "元");
-					list.get(position).setCount(count);	
-					viewholder.et_acount.setText(list.get(position).getCount() + "");										
-					if (list.get(position).getCount() <= 0) {
-						viewholder.et_acount.setVisibility(View.INVISIBLE);
-						viewholder.iv_remove.setVisibility(View.INVISIBLE);
-					} else {
-						viewholder.et_acount.setVisibility(View.VISIBLE);
-						viewholder.iv_remove.setVisibility(View.VISIBLE);
-					}
-					
-				}
-			});
-			if (list.get(position).getCount() <= 0) {
-				viewholder.et_acount.setVisibility(View.INVISIBLE);
-				viewholder.iv_remove.setVisibility(View.INVISIBLE);
-			} else {
-				viewholder.et_acount.setText(list.get(position).getCount() + "");
+		}
+		viewholder.tv_name.setText(list.get(position).getGood_name());
+		viewholder.iv_add.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int count = list.get(position).getCount();
+				count++;
+				totalPrice += Integer.valueOf(list.get(position).getPrice());
+				orderGoodsTotal.setText("总价:" + totalPrice + "元");
+				list.get(position).setCount(count);
 				viewholder.et_acount.setVisibility(View.VISIBLE);
 				viewholder.iv_remove.setVisibility(View.VISIBLE);
+				viewholder.et_acount
+						.setText(list.get(position).getCount() + "");
 			}
-			return view;
+		});
+
+		viewholder.iv_remove.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int count = list.get(position).getCount();
+				count--;
+				totalPrice -= Integer.valueOf(list.get(position).getPrice());
+				orderGoodsTotal.setText("总价:" + totalPrice + "元");
+				list.get(position).setCount(count);
+				viewholder.et_acount
+						.setText(list.get(position).getCount() + "");
+				if (list.get(position).getCount() <= 0) {
+					viewholder.et_acount.setVisibility(View.INVISIBLE);
+					viewholder.iv_remove.setVisibility(View.INVISIBLE);
+				} else {
+					viewholder.et_acount.setVisibility(View.VISIBLE);
+					viewholder.iv_remove.setVisibility(View.VISIBLE);
+				}
+
+			}
+		});
+		if (list.get(position).getCount() <= 0) {
+			viewholder.et_acount.setVisibility(View.INVISIBLE);
+			viewholder.iv_remove.setVisibility(View.INVISIBLE);
+		} else {
+			viewholder.et_acount.setText(list.get(position).getCount() + "");
+			viewholder.et_acount.setVisibility(View.VISIBLE);
+			viewholder.iv_remove.setVisibility(View.VISIBLE);
+			
+		}
+		
+		return view;
 	}
 
 	class ViewOrderGoods {

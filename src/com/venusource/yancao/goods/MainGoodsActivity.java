@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,16 +22,11 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
 	
 	private GoodsTab01 goodsTab01;
 
-	/**
-	 * ËÄ¸ö°´Å¥
-	 */
 	private LinearLayout mTabBtn01;
 	private LinearLayout mTabBtn02;
 	private LinearLayout mTabBtn03;
 	private LinearLayout mTabBtn04;
-	/**
-	 * ÓÃÓÚ¶ÔFragment½øĞĞ¹ÜÀí
-	 */
+
 	private FragmentManager fragmentManager;
 
     @Override
@@ -40,6 +36,8 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
 		initViews();
 		fragmentManager = getFragmentManager();
 		setTabSelection(0);
+
+		
         
     }
 
@@ -79,18 +77,15 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
 //		}
 	}
     
-    /**
-	 * ¸ù¾İ´«ÈëµÄindex²ÎÊıÀ´ÉèÖÃÑ¡ÖĞµÄtabÒ³¡£
-	 * 
-	 */
+  
 	@SuppressLint("NewApi")
 	private void setTabSelection(int index)
 	{
-		// ÖØÖÃ°´Å¥
+		
 		resetBtn();
-		// ¿ªÆôÒ»¸öFragmentÊÂÎñ
+	
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		// ÏÈÒş²ØµôËùÓĞµÄFragment£¬ÒÔ·ÀÖ¹ÓĞ¶à¸öFragmentÏÔÊ¾ÔÚ½çÃæÉÏµÄÇé¿ö
+		
 		hideFragments(transaction);
 		switch (index)
 		{
@@ -98,12 +93,12 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
 			
 			if (goodsTab01 == null)
 			{
-				// Èç¹ûMessageFragmentÎª¿Õ£¬Ôò´´½¨Ò»¸ö²¢Ìí¼Óµ½½çÃæÉÏ
+				
 				goodsTab01 = new GoodsTab01();
 				transaction.add(R.id.id_goods_content, goodsTab01);
 			} else
 			{
-				// Èç¹ûMessageFragment²»Îª¿Õ£¬ÔòÖ±½Ó½«ËüÏÔÊ¾³öÀ´
+				
 				transaction.show(goodsTab01);
 			}
 			break;
@@ -111,42 +106,42 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
 //			
 //			if (mTab02 == null)
 //			{
-//				// Èç¹ûMessageFragmentÎª¿Õ£¬Ôò´´½¨Ò»¸ö²¢Ìí¼Óµ½½çÃæÉÏ
+//				// ï¿½ï¿½ï¿½MessageFragmentÎªï¿½Õ£ï¿½ï¿½ò´´½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //				mTab02 = new MainTab02();
 //				transaction.add(R.id.id_content, mTab02);
 //			} else
 //			{
-//				// Èç¹ûMessageFragment²»Îª¿Õ£¬ÔòÖ±½Ó½«ËüÏÔÊ¾³öÀ´
+//				// ï¿½ï¿½ï¿½MessageFragmentï¿½ï¿½Îªï¿½Õ£ï¿½ï¿½ï¿½Ö±ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 //				transaction.show(mTab02);
 //			}
 //			break;
 //		case 2:
-//			// µ±µã»÷ÁË¶¯Ì¬tabÊ±£¬¸Ä±ä¿Ø¼şµÄÍ¼Æ¬ºÍÎÄ×ÖÑÕÉ«
+//			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½Ì¬tabÊ±ï¿½ï¿½ï¿½Ä±ï¿½Ø¼ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
 //			((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
 //					.setImageResource(R.drawable.tab_address_pressed);
 //			if (mTab03 == null)
 //			{
-//				// Èç¹ûNewsFragmentÎª¿Õ£¬Ôò´´½¨Ò»¸ö²¢Ìí¼Óµ½½çÃæÉÏ
+//				// ï¿½ï¿½ï¿½NewsFragmentÎªï¿½Õ£ï¿½ï¿½ò´´½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //				mTab03 = new MainTab03();
 //				transaction.add(R.id.id_content, mTab03);
 //			} else
 //			{
-//				// Èç¹ûNewsFragment²»Îª¿Õ£¬ÔòÖ±½Ó½«ËüÏÔÊ¾³öÀ´
+//				// ï¿½ï¿½ï¿½NewsFragmentï¿½ï¿½Îªï¿½Õ£ï¿½ï¿½ï¿½Ö±ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 //				transaction.show(mTab03);
 //			}
 //			break;
 //		case 3:
-//			// µ±µã»÷ÁËÉèÖÃtabÊ±£¬¸Ä±ä¿Ø¼şµÄÍ¼Æ¬ºÍÎÄ×ÖÑÕÉ«
+//			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tabÊ±ï¿½ï¿½ï¿½Ä±ï¿½Ø¼ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
 //			((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
 //					.setImageResource(R.drawable.tab_settings_pressed);
 //			if (mTab04 == null)
 //			{
-//				// Èç¹ûSettingFragmentÎª¿Õ£¬Ôò´´½¨Ò»¸ö²¢Ìí¼Óµ½½çÃæÉÏ
+//				// ï¿½ï¿½ï¿½SettingFragmentÎªï¿½Õ£ï¿½ï¿½ò´´½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //				mTab04 = new MainTab04();
 //				transaction.add(R.id.id_content, mTab04);
 //			} else
 //			{
-//				// Èç¹ûSettingFragment²»Îª¿Õ£¬ÔòÖ±½Ó½«ËüÏÔÊ¾³öÀ´
+//				// ï¿½ï¿½ï¿½SettingFragmentï¿½ï¿½Îªï¿½Õ£ï¿½ï¿½ï¿½Ö±ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 //				transaction.show(mTab04);
 //			}
 //			break;
@@ -154,9 +149,7 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
 		transaction.commit();
 	}
 
-	/**
-	 * Çå³ıµôËùÓĞµÄÑ¡ÖĞ×´Ì¬¡£
-	 */
+
 	private void resetBtn()
 	{
 //		((ImageButton) mTabBtnWeixin.findViewById(R.id.btn_tab_bottom_weixin))
@@ -169,12 +162,7 @@ public class MainGoodsActivity extends Activity implements OnClickListener{
 //				.setImageResource(R.drawable.tab_settings_normal);
 	}
 
-	/**
-	 * ½«ËùÓĞµÄFragment¶¼ÖÃÎªÒş²Ø×´Ì¬¡£
-	 * 
-	 * @param transaction
-	 *            ÓÃÓÚ¶ÔFragmentÖ´ĞĞ²Ù×÷µÄÊÂÎñ
-	 */
+	
 	@SuppressLint("NewApi")
 	private void hideFragments(FragmentTransaction transaction)
 	{
