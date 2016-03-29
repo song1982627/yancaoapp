@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".goods.MainGoodsActivity" >
-    
+    <include layout="@layout/title_goods" />
  	<include layout="@layout/goods_bar" />
     <FrameLayout
         android:id="@+id/id_goods_content"
