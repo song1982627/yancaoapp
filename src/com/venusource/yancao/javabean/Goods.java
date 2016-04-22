@@ -11,6 +11,8 @@ public class Goods {
     private String describle;//描述
 
     private int count = 0;//数量
+    
+    private String imgUrl = "";
 
     public int getCount() {
         return count;
@@ -50,6 +52,14 @@ public class Goods {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
 	}
     
     

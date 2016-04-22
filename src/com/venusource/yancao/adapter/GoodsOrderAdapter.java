@@ -33,6 +33,14 @@ public class GoodsOrderAdapter extends BaseAdapter {
 	private int buyNum = 0;// 购买数量
 	private int totalPrice=0;//总价
 
+	public List<Goods> getList() {
+		return list;
+	}
+
+	public void setList(List<Goods> list) {
+		this.list = list;
+	}
+
 	public int getBuyNum() {
 		return buyNum;
 	}

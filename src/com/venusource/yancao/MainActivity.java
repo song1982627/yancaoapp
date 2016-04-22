@@ -2,7 +2,13 @@ package com.venusource.yancao;
 
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.baidu.mapapi.SDKInitializer;
+import com.venusource.yancao.api.HttpsClient;
+import com.venusource.yancao.api.AsyncTaskImpl.AllProductTask;
+import com.venusource.yancao.log.LogUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -10,11 +16,14 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -49,17 +58,21 @@ public class MainActivity extends Activity implements OnClickListener{
 		DisplayMetrics dm = new DisplayMetrics();
 	    this.getWindowManager().getDefaultDisplay().getMetrics(dm);
 	    screenWidth =dm.widthPixels;
-	    screenHeight =dm.heightPixels;
-        
+	    screenHeight =dm.heightPixels;	
+		YcApplication yc = (YcApplication)getApplication();		
+		WebView webview = new WebView(this);
+        WebSettings settings = webview.getSettings();
+  		String ua = settings.getUserAgentString();  		
+  		yc.setUserAgent(ua);    
     }
 
     private void initViews()
 	{
 
-		mTabBtnWeixin = (LinearLayout) findViewById(R.id.id_tab_bottom_weixin);
-		mTabBtnFrd = (LinearLayout) findViewById(R.id.id_tab_bottom_friend);
-		mTabBtnAddress = (LinearLayout) findViewById(R.id.id_tab_bottom_contact);
-		mTabBtnSettings = (LinearLayout) findViewById(R.id.id_tab_bottom_setting);
+		mTabBtnWeixin = (LinearLayout) findViewById(R.id.lTab01);
+		mTabBtnFrd = (LinearLayout) findViewById(R.id.lTab02);
+		mTabBtnAddress = (LinearLayout) findViewById(R.id.lTab03);
+		mTabBtnSettings = (LinearLayout) findViewById(R.id.lTab04);
 
 		mTabBtnWeixin.setOnClickListener(this);
 		mTabBtnFrd.setOnClickListener(this);
@@ -71,16 +84,16 @@ public class MainActivity extends Activity implements OnClickListener{
 	{
 		switch (v.getId())
 		{
-		case R.id.id_tab_bottom_weixin:
+		case R.id.lTab01:
 			setTabSelection(0);
 			break;
-		case R.id.id_tab_bottom_friend:
+		case R.id.lTab02:
 			setTabSelection(1);
 			break;
-		case R.id.id_tab_bottom_contact:
+		case R.id.lTab03:
 			setTabSelection(2);
 			break;
-		case R.id.id_tab_bottom_setting:
+		case R.id.lTab04:
 			setTabSelection(3);
 			break;
 
@@ -103,7 +116,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		{
 		case 0:
 			
-			((ImageButton) mTabBtnWeixin.findViewById(R.id.btn_tab_bottom_weixin))
+			((ImageButton) mTabBtnWeixin.findViewById(R.id.imgTab01))
 					.setImageResource(R.drawable.tab_weixin_pressed);
 			if (mTab01 == null)
 			{
@@ -118,7 +131,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		case 1:
 			
-			((ImageButton) mTabBtnFrd.findViewById(R.id.btn_tab_bottom_friend))
+			((ImageButton) mTabBtnFrd.findViewById(R.id.imgTab02))
 					.setImageResource(R.drawable.tab_find_frd_pressed);
 			if (mTab02 == null)
 			{
@@ -133,7 +146,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		case 2:
 			
-			((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
+			((ImageButton) mTabBtnAddress.findViewById(R.id.imgTab03))
 					.setImageResource(R.drawable.tab_address_pressed);
 			if (mTab03 == null)
 			{
@@ -148,7 +161,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		case 3:
 			
-			((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
+			((ImageButton) mTabBtnSettings.findViewById(R.id.imgTab04))
 					.setImageResource(R.drawable.tab_settings_pressed);
 			if (mTab04 == null)
 			{
@@ -168,13 +181,13 @@ public class MainActivity extends Activity implements OnClickListener{
 	
 	private void resetBtn()
 	{
-		((ImageButton) mTabBtnWeixin.findViewById(R.id.btn_tab_bottom_weixin))
+		((ImageButton) mTabBtnWeixin.findViewById(R.id.imgTab01))
 				.setImageResource(R.drawable.tab_weixin_normal);
-		((ImageButton) mTabBtnFrd.findViewById(R.id.btn_tab_bottom_friend))
+		((ImageButton) mTabBtnFrd.findViewById(R.id.imgTab02))
 				.setImageResource(R.drawable.tab_find_frd_normal);
-		((ImageButton) mTabBtnAddress.findViewById(R.id.btn_tab_bottom_contact))
+		((ImageButton) mTabBtnAddress.findViewById(R.id.imgTab03))
 				.setImageResource(R.drawable.tab_address_normal);
-		((ImageButton) mTabBtnSettings.findViewById(R.id.btn_tab_bottom_setting))
+		((ImageButton) mTabBtnSettings.findViewById(R.id.imgTab04))
 				.setImageResource(R.drawable.tab_settings_normal);
 	}
 

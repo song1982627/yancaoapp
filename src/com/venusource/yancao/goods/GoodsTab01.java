@@ -80,33 +80,8 @@ public class GoodsTab01 extends Fragment {
 	}
 
 	private void initListData(YcApplication yc) {
-		List<Goods> list = new ArrayList<Goods>();
-		Goods goods = new Goods();
-		goods.setId("ID-1");
-		goods.setGood_name("中南海(软包)/条" );
-		goods.setDescrible("商户1");
-		goods.setPrice(120 + "");
-		list.add(goods);
-		goods = new Goods();
-		goods.setId("ID-2");
-		goods.setGood_name("长白山(软包)/条" );
-		goods.setDescrible("商户1");
-		goods.setPrice(160 + "");	
-		list.add(goods);	
-		goods = new Goods();
-		goods.setId("ID-3");
-		goods.setGood_name("黄鹤楼(软包)/条" );
-		goods.setDescrible("商户1");
-		goods.setPrice(170 + "");	
-		list.add(goods);
-		goods = new Goods();
-		goods.setId("ID-4");
-		goods.setGood_name("中华(软包)/条" );
-		goods.setDescrible("商户1");
-		goods.setPrice(270 + "");	
-		list.add(goods);
-	
-		GoodsAdapter goodsAdapter = new GoodsAdapter(view.getContext(), yc.getNewGS(list),rootView,shopCart,buyNumView,buyNumBt,yc);
+		
+		GoodsAdapter goodsAdapter = new GoodsAdapter(view.getContext(), yc.getGs(),rootView,shopCart,buyNumView,buyNumBt,yc);
 		
 		listView.setAdapter(goodsAdapter);
 		

@@ -33,8 +33,6 @@ public class GoodsOrderCommitAdapter extends BaseAdapter {
 		this.context = context;
 		this.list = new ArrayList<Goods>();
 		Goods good = new Goods();
-		good.setGood_name("商品");
-		this.list.add(good);
 		if (list!=null && list.size() > 0) {
 			for (Goods gd : list) {
 				this.list.add(gd);
@@ -82,31 +80,17 @@ public class GoodsOrderCommitAdapter extends BaseAdapter {
 		} else {
 			viewholder = (ViewOrderCommitGoods) view.getTag();
 		}
+		
 		int w = MainActivity.screenWidth/6;
-		if (position == 0) {
-			viewholder.goods_name.setText("商品");		
-			viewholder.goods_name.setGravity(Gravity.CENTER);
-			
-			viewholder.goods_acount.setText("数量");		
-			viewholder.goods_price.setText("价格");	
-			Resources resources = context.getResources();  
-			Drawable dw = resources.getDrawable(R.drawable.tv_bar); 
-			viewholder.goods_name.setBackground(dw);
-			viewholder.goods_acount.setBackground(dw);
-			viewholder.goods_price.setBackground(dw);
-			viewholder.goods_name.setPadding(0, 0, 0, 5);
-			viewholder.goods_acount.setPadding(0, 0, 0, 5);
-			viewholder.goods_price.setPadding(0, 0, 0, 5);
-			
-		} else {
-			viewholder.goods_name.setText(list.get(position).getGood_name());		
-			viewholder.goods_acount.setText(list.get(position).getCount() + "");		
-			viewholder.goods_price.setText(list.get(position).getPrice() + "元");		
-		}
 		
 		viewholder.goods_name.setWidth(w*2);
 		viewholder.goods_acount.setWidth(80);
 		viewholder.goods_price.setWidth(w*1);
+		
+		viewholder.goods_name.setText(list.get(position).getGood_name());		
+		viewholder.goods_acount.setText(list.get(position).getCount() + "");		
+		viewholder.goods_price.setText(list.get(position).getPrice() + "元");		
+		
 		
 		return view;
 	}

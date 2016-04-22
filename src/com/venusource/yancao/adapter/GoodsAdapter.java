@@ -21,6 +21,7 @@ import java.util.List;
 import com.venusource.yancao.BadgeView;
 import com.venusource.yancao.R;
 import com.venusource.yancao.YcApplication;
+import com.venusource.yancao.api.AsyncTaskImpl.AsyncImageTask;
 import com.venusource.yancao.javabean.Goods;
 
 
@@ -87,8 +88,9 @@ public class GoodsAdapter extends BaseAdapter {
 		final Viewholder viewholder;
 		if (view == null) {
 			view = LayoutInflater.from(context).inflate(
-					R.layout.right_listview, null);
+					R.layout.goods_listview, null);
 			viewholder = new Viewholder();
+			viewholder.iv_pic = (ImageView)view.findViewById(R.id.iv_pic);
 			viewholder.tv_name = (TextView) view.findViewById(R.id.tv_name);
 			viewholder.tv_desc = (TextView) view.findViewById(R.id.tv_desc);
 			viewholder.tv_price = (TextView) view.findViewById(R.id.tv_price);
@@ -103,7 +105,7 @@ public class GoodsAdapter extends BaseAdapter {
 		viewholder.tv_name.setText(list.get(position).getGood_name());
 		viewholder.tv_desc.setText(list.get(position).getDescrible());
 		viewholder.tv_price.setText(list.get(position).getPrice());
-
+		new AsyncImageTask(viewholder.iv_pic,list.get(position).getImgUrl()).execute(); 
 		viewholder.iv_add.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -256,7 +258,7 @@ public class GoodsAdapter extends BaseAdapter {
 		TextView tv_name;
 		TextView tv_desc;
 		TextView tv_price;
-		ImageView iv_add, iv_remove;
+		ImageView iv_pic, iv_add, iv_remove;
 		EditText et_acount;
 	}
 

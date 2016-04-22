@@ -1,15 +1,19 @@
 package com.venusource.yancao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.cloud.CloudManager;
-import com.baidu.mapapi.cloud.LocalSearchInfo;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -21,23 +25,29 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
+import com.baidu.mapapi.map.Overlay;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Polyline;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.venusource.yancao.adapter.GoodsAdapter;
+import com.baidu.mapapi.model.inner.GeoPoint;
+import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviParaOption;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.venusource.yancao.adapter.GoodsOrderAdapter;
 import com.venusource.yancao.adapter.GoodsOrderCommitAdapter;
-import com.venusource.yancao.goods.MainGoodsActivity;
+import com.venusource.yancao.api.HttpsClient;
+import com.venusource.yancao.api.AsyncTaskImpl.AllProductTask;
 import com.venusource.yancao.javabean.Goods;
 import com.venusource.yancao.zxing.CreateQRImage;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -99,6 +109,8 @@ public class MainTab01 extends Fragment
 	private ScrollView sw;
 	private boolean isClick = true;
 	private YcApplication yc;
+	private List<LatLng> points = new ArrayList<LatLng>();
+	private Polyline mPolyline;
 	
 	private Handler handler = new Handler();    
 	private Runnable runnable = new Runnable() {    
@@ -124,6 +136,15 @@ public class MainTab01 extends Fragment
         		ListView lw = (ListView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_list);
         		lw.setAdapter(goodsAdapter);
         		
+        		View headerView = LayoutInflater.from(view.getContext()).inflate(
+        				R.layout.order_goods_heardview, null);
+    			int w = MainActivity.screenWidth/6;
+    			((TextView)headerView.findViewById(R.id.heard_goods_des)).setWidth(w*2);
+    			((TextView)headerView.findViewById(R.id.heard_goods_num)).setWidth(80);
+    			((TextView)headerView.findViewById(R.id.heard_goods_price)).setWidth(w*1);
+        		
+        		lw.addHeaderView(headerView);
+        			
         		ImageView sweepIV = (ImageView)ordeGoodsCommitView.findViewById(R.id.order_goods_commit_pic);
         		sweepIV.setOnClickListener(new OnClickListener() {
 					@Override
@@ -132,7 +153,10 @@ public class MainTab01 extends Fragment
 						recLen = 0;
 						mMapView.removeView(ordeGoodsCommitView);	
 						isClick = true;
-						yc.setGs(new ArrayList<Goods>());
+						Intent in = new Intent();  
+		                in.setClassName(view.getContext(), "com.venusource.yancao.evaluate.MainEvaluActivity" );                          
+		                startActivity(in);  		            
+		                mPolyline.remove();
 					}	
 			    });
         		CreateQRImage cr = new CreateQRImage();
@@ -171,6 +195,7 @@ public class MainTab01 extends Fragment
 			child.setVisibility(View.INVISIBLE);
 		}
 		mMapView.showZoomControls(false);
+		
 		mBaiduMap = mMapView.getMap();
 		
 		mBaiduMap.setMyLocationEnabled(true);
@@ -187,9 +212,9 @@ public class MainTab01 extends Fragment
 		return view;
 
 	}
-
+	
 	//定位产生的商户
-	private void setMapView() {
+	private void setMapView(int distinct) {
 		LinearLayout ly = new LinearLayout(view.getContext());
 
 		RelativeLayout rl = new RelativeLayout(view.getContext());
@@ -222,7 +247,7 @@ public class MainTab01 extends Fragment
 
 		TextView location2 = new TextView(view.getContext());
 		location2.setWidth(200);
-		location2.setText("45m");
+		location2.setText(distinct + "m");
 		location2.setGravity(Gravity.CENTER);
 		location2.setTextSize(10);
 		rl.addView(location2, param2);
@@ -241,6 +266,11 @@ public class MainTab01 extends Fragment
 			public boolean onMarkerClick(final Marker marker) {
 				//mBaiduMap.setPadding(paddingLeft, paddingTop, paddingRight,paddingBottom);
 				addView();
+				OverlayOptions ooPolyline = new PolylineOptions().width(10)
+			                .color(0xAAFF0000).points(points);
+			    mPolyline = (Polyline) mBaiduMap.addOverlay(ooPolyline);
+			  
+				//mPolyline.setDottedLine(true);
 				return true;
 			}
 		});
@@ -264,15 +294,20 @@ public class MainTab01 extends Fragment
             mBaiduMap.setMyLocationData(locData);
             if (isFirstLoc) {
                 isFirstLoc = false;
-                LatLng ll = new LatLng(location.getLatitude(),
+                LatLng l1 = new LatLng(location.getLatitude(),
                         location.getLongitude());
                 MapStatus.Builder builder = new MapStatus.Builder();
-                builder.target(ll).zoom(18.0f);
+                builder.target(l1).zoom(18.0f);
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
                 
                 latitude = location.getLatitude() + 0.0005;
                 longitude = location.getLongitude() + 0.0005;
-                setMapView();
+                LatLng l2 = new LatLng(latitude,longitude);
+                int distinct =  (int)DistanceUtil.getDistance(l1, l2);             
+                setMapView(distinct);
+                points.add(l1);
+                points.add(l2);
+               
             }
           
            
@@ -287,21 +322,13 @@ public class MainTab01 extends Fragment
     //获取商户默认选择烟列表数据
     private void initListData(ListView listView,Context context,TextView orderGoodsTotal) {	
     	isClick = true;
-		List<Goods> list = new ArrayList<Goods>();
-		Goods goods = new Goods();
-		goods.setId("ID-1");
-		goods.setGood_name("中南海(软包)/条" );
-		goods.setDescrible("商户1");
-		goods.setPrice(120 + "");
-		list.add(goods);
-		goods = new Goods();
-		goods.setId("ID-2");
-		goods.setGood_name("长白山(软包)/条" );
-		goods.setDescrible("商户1");
-		goods.setPrice(160 + "");	
-		list.add(goods);		
-		GoodsOrderAdapter goodsAdapter = new GoodsOrderAdapter(context, yc.getNewGS(list),orderGoodsTotal);		
+		GoodsOrderAdapter goodsAdapter = new GoodsOrderAdapter(context, yc.getGs(),orderGoodsTotal);		
 		listView.setAdapter(goodsAdapter);
+		Map<String,String> params = new HashMap<String,String>();
+ 		params.put("username", "admin");
+ 		params.put("password", "password");
+		new AllProductTask(yc,goodsAdapter).execute(null, params);
+		
 	}	
     
     //选择商品列表返回数据
@@ -373,7 +400,7 @@ public class MainTab01 extends Fragment
         
         be.setOnClickListener(new OnClickListener() {
  			@Override
- 			public void onClick(View v) {
+ 			public void onClick(View v) {					
  				Intent in = new Intent();  
                 in.setClassName( view.getContext(), "com.venusource.yancao.goods.MainGoodsActivity" );                          
                 startActivityForResult(in ,1);  
@@ -475,8 +502,7 @@ public class MainTab01 extends Fragment
 			choseListData(((ListView)ordeGoodsView.findViewById(R.id.order_goods_list)),ordeGoodsView.getContext(),(TextView)ordeGoodsView.findViewById(R.id.order_goods_total));
 	    	
 		}
-		
-		
 	}
+	
 	
 }

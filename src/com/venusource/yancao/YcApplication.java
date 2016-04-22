@@ -10,6 +10,8 @@ import com.venusource.yancao.javabean.Goods;
 import android.app.Application;
 
 public class YcApplication extends Application{
+	private String userAgent="";
+	
 	private List<Goods> gs;
 	
 	public List<Goods> getGs() {
@@ -51,10 +53,15 @@ public class YcApplication extends Application{
 	
 	public List<Goods> getCountGsList() {
 		List<Goods> countGsList = new ArrayList<Goods>();
+		Map<String,Goods> map = new HashMap<String,Goods>();
 		if (gs != null && gs.size() > 0) {
 			for (Goods gd : gs) {
 				if (gd.getCount() > 0) {
-					countGsList.add(gd);
+					if (!map.containsKey(gd.getId())) {
+						countGsList.add(gd);
+						map.put(gd.getId(),gd);
+					}
+					
 				}
 			}
 		}
@@ -66,4 +73,17 @@ public class YcApplication extends Application{
         super.onCreate();     
         this.setGs(new ArrayList<Goods>());
     }
+
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+	}
+	
+	
+	
 }
