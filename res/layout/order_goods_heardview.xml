@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:layout_width="fill_parent"  
+    android:layout_height="wrap_content"  
+    android:orientation="vertical" >  
+    
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="horizontal"
+	    android:paddingTop="2dp"
+	    android:paddingBottom="2dp"
+	   >
+	
+	    <TextView
+	        android:id="@+id/heard_goods_des"
+	        style="@style/textStyle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="20dp"      
+	        android:gravity="center"     
+	        android:text="商品" />
+	
+	    <TextView
+	        android:id="@+id/heard_goods_num"
+	        style="@style/textStyle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="20dp"     
+	        android:gravity="center"
+	        android:text="数量" />
+	
+	    <TextView
+	        android:id="@+id/heard_goods_price"
+	        style="@style/textStyle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="20dp"       
+	        android:gravity="left"
+	        android:text="价格" />
+	    
+	   
+	
+	</LinearLayout>
+	
+	 <View  
+	        android:layout_width="fill_parent"  
+	        android:layout_height="1px"  
+	        android:background="#d8d8d8" />
+</LinearLayout>

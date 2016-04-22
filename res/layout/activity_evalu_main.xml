@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+   		xmlns:tools="http://schemas.android.com/tools"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="#FFFFFF"
+	    android:orientation="vertical"
+	    >
+		<include layout="@layout/title_evalu" />
+	    <TextView
+	        android:id="@+id/evalu_name"
+	        style="@style/textStyle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="20dp"
+	        android:paddingLeft="10dp"
+	        android:text="" />
+	
+	    <TextView
+	        android:id="@+id/evalu_address"
+	        style="@style/textStyle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="20dp"
+	        android:paddingLeft="10dp"
+	        android:text="" />
+	
+	    <ListView
+	        android:id="@+id/evalu_list"
+	        android:paddingLeft="10dp"
+	        android:paddingRight="10dp"	    
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="#ffffff" >
+	    </ListView>
+	    
+	    <LinearLayout
+        android:id="@+id/evalu_bt"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp" 
+        android:background="#ffff"
+      
+        android:orientation="horizontal">
+         
+         <RelativeLayout
+	        android:layout_width="0dp"
+	        android:layout_height="30dp" 
+	        android:background="#ffff"
+	        android:layout_weight="1"
+	        android:gravity="center"
+	        android:paddingRight="5dp"
+	        android:orientation="horizontal">
+
+             <Button
+                 android:id="@+id/evalu_b1"
+                 style="?android:attr/buttonStyleSmall"
+                 android:layout_width="80dp"
+                 android:layout_height="wrap_content"               
+                 android:background="#ff9900"    
+                 
+                 android:gravity="center"         
+                 android:text="服务好" />
+
+         </RelativeLayout>
+         <RelativeLayout
+	        android:layout_width="0dp"
+	        android:layout_height="30dp" 
+	        android:background="#ffff"
+	        android:layout_weight="1"
+	        android:gravity="center"
+	        android:paddingLeft="5dp"
+	        android:orientation="horizontal">
+
+	          <Button
+	             android:id="@+id/evalu_b2"
+	              style="?android:attr/buttonStyleSmall"
+	              android:layout_width="80dp"
+	              android:layout_height="wrap_content"	             
+	              android:background="#ff9900"	            
+	              android:text="接单快" />
+
+         </RelativeLayout>
+         
+         <RelativeLayout
+	        android:layout_width="0dp"
+	        android:layout_height="30dp" 
+	        android:background="#ffff"
+	        android:layout_weight="1"
+	        android:gravity="center"
+	        android:paddingLeft="5dp"
+	        android:orientation="horizontal">
+
+	          <Button
+	              android:id="@+id/evalu_b3"
+	              style="?android:attr/buttonStyleSmall"
+	              android:layout_width="80dp"
+	              android:layout_height="wrap_content"	             
+	              android:background="#ff9900"	            
+	              android:text="商品好" />
+
+         </RelativeLayout>
+        
+    </LinearLayout>
+    
+	 <RatingBar
+	    android:id="@+id/ratingBar"
+	    android:numStars="5" 
+	    android:rating="3"  
+	    android:paddingTop="10dp"
+	    android:layout_gravity="center"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content">
+	</RatingBar>    
+	
+	 <Button
+	     android:id="@+id/evalu_commit"	     
+	     style="?android:attr/buttonStyleSmall"
+	     android:layout_width="80dp"
+	     android:layout_gravity="center"
+	     android:layout_height="30dp"	             
+	     android:background="#ff9900"	            
+	      android:text="提交" />
+</LinearLayout>
